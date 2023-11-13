@@ -19,7 +19,7 @@ typedef struct
 
 Bilangan Rekap_Bil_Genap[400], Rekap_Bil_Ganjil[400];
 
-int index, genap, ganjil;
+int indeks, genap, ganjil;
 
 void bagi(int a, int b, int *hasil, int *sisa)
 {
@@ -72,14 +72,6 @@ void assignMatrix(int (*matriks)[20][20], int *baris, int *kolom)
       printf("\033[0;35m");
       scanf("%d", &(*matriks)[i][j]);
       printf("\033[0m");
-      if (j == (((*baris) * (*kolom)) - 1))
-      {
-        scanf("%c", &spasi);
-        if (spasi != ' ')
-        {
-          printf("Input tidak valid. Harap masukkan elemen dengan benar.\n");
-        }
-      }
       j++;
     }
     i++;
@@ -119,24 +111,24 @@ void printRekap(Bilangan rekap[400], int total)
   printf("Total: \033[0;34m%d\033[0m \n", total);
 }
 
-void assignBil(int angka, Bilangan (*rekap)[400], int *index)
+void assignBil(int angka, Bilangan (*rekap)[400], int *indeks)
 {
-  if ((angka != (*rekap)[*index].Angka) &&
-      ((*rekap)[*index].Angka == 0))
+  if ((angka != (*rekap)[*indeks].Angka) &&
+      ((*rekap)[*indeks].Angka == 0))
   {
-    (*rekap)[*index].Angka = angka;
-    (*rekap)[*index].Jumlah_Kemunculan++;
-    *index = 26;
+    (*rekap)[*indeks].Angka = angka;
+    (*rekap)[*indeks].Jumlah_Kemunculan++;
+    *indeks = 26;
   }
-  else if (angka == (*rekap)[*index].Angka)
+  else if (angka == (*rekap)[*indeks].Angka)
   {
-    (*rekap)[*index].Jumlah_Kemunculan++;
-    *index = 26;
+    (*rekap)[*indeks].Jumlah_Kemunculan++;
+    *indeks = 26;
   }
-  (*index)++;
+  (*indeks)++;
 }
 
-void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)[400], Bilangan (*rekapGenap)[400], int *ganjil, int *genap, int index)
+void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)[400], Bilangan (*rekapGenap)[400], int *ganjil, int *genap, int *indeks)
 {
   int i, j, hasil, sisa;
   *genap = 0;
@@ -158,21 +150,21 @@ void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)
     j = 0;
     while (j < kolom)
     {
-      index = 0;
+      *indeks = 0;
       bagi(matriks[i][j], 2, &hasil, &sisa);
       if (sisa == 0)
       {
-        while (index < 25)
+        while ((*indeks) < 25)
         {
-          assignBil(matriks[i][j], &(*rekapGenap), &index);
+          assignBil(matriks[i][j], &(*rekapGenap), &(*indeks));
         }
         (*genap)++;
       }
       else
       {
-        while (index < 25)
+        while ((*indeks) < 25)
         {
-          assignBil(matriks[i][j], &(*rekapGanjil), &index);
+          assignBil(matriks[i][j], &(*rekapGanjil), &(*indeks));
         }
         (*ganjil)++;
       }
@@ -189,7 +181,7 @@ int main()
   assignMatrix(&matriks, &baris, &kolom);
   printf("\n\033[1;33m============== MATRIKS =============\033[0m \n \n");
   printMatrix(&matriks, baris, kolom);
-  rekapBil(matriks, baris, kolom, &Rekap_Bil_Ganjil, &Rekap_Bil_Genap, &ganjil, &genap, index);
+  rekapBil(matriks, baris, kolom, &Rekap_Bil_Ganjil, &Rekap_Bil_Genap, &ganjil, &genap, &indeks);
   printf("\033[1;33m======= REKAP BILANGAN GENAP =======\033[0m \n \n");
   printRekap(Rekap_Bil_Genap, genap);
   printf("\n\033[1;33m======= REKAP BILANGAN GANJIL =======\033[0m \n \n");
