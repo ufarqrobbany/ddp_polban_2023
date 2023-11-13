@@ -17,7 +17,7 @@ typedef struct
   int Jumlah_Kemunculan;
 } Bilangan;
 
-Bilangan Rekap_Bil_Genap[25], Rekap_Bil_Ganjil[25];
+Bilangan Rekap_Bil_Genap[400], Rekap_Bil_Ganjil[400];
 
 int index, genap, ganjil;
 
@@ -103,7 +103,7 @@ void printMatrix(int (*matriks)[20][20], int baris, int kolom)
   }
 }
 
-void printRekap(Bilangan rekap[25], int total)
+void printRekap(Bilangan rekap[400], int total)
 {
   int i = 0;
   while (i < 25)
@@ -119,7 +119,7 @@ void printRekap(Bilangan rekap[25], int total)
   printf("Total: \033[0;34m%d\033[0m \n", total);
 }
 
-void assignBil(int angka, Bilangan (*rekap)[25], int *index)
+void assignBil(int angka, Bilangan (*rekap)[400], int *index)
 {
   if ((angka != (*rekap)[*index].Angka) &&
       ((*rekap)[*index].Angka == 0))
@@ -136,7 +136,7 @@ void assignBil(int angka, Bilangan (*rekap)[25], int *index)
   (*index)++;
 }
 
-void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)[25], Bilangan (*rekapGenap)[25], int *ganjil, int *genap, int index)
+void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)[400], Bilangan (*rekapGenap)[400], int *ganjil, int *genap, int index)
 {
   int i, j, hasil, sisa;
   *genap = 0;
