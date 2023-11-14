@@ -12,13 +12,6 @@ typedef struct
 
 Date D;
 
-void BacaDate(Date(*D));
-bool isValid(Date D);
-bool isKabisat(Date D);
-int TglAkhir(Date D);
-void DateBefore(Date(*D));
-void NextDate(Date(*D));
-
 void BacaDate(Date(*D))
 {
   printf("Masukkan tanggal: \033[0;34m");
@@ -28,18 +21,6 @@ void BacaDate(Date(*D))
   printf("\033[0mMasukkan tahun: \033[0;34m");
   scanf("%d", &(*D).Thn);
   printf("\033[0m");
-}
-
-bool isValid(Date D)
-{
-  bool valid = false;
-
-  if ((D.Tgl >= 1) && (D.Tgl <= TglAkhir(D)) && (D.Bln >= 1) && (D.Bln <= 12))
-  {
-    valid = true;
-  }
-
-  return valid;
 }
 
 bool isKabisat(Date D)
@@ -73,6 +54,18 @@ int TglAkhir(Date D)
   }
 
   return tanggalAkhir;
+}
+
+bool isValid(Date D)
+{
+  bool valid = false;
+
+  if ((D.Tgl >= 1) && (D.Tgl <= TglAkhir(D)) && (D.Bln >= 1) && (D.Bln <= 12) && (D.Thn >= 1))
+  {
+    valid = true;
+  }
+
+  return valid;
 }
 
 void DateBefore(Date(*D))
@@ -135,16 +128,22 @@ int main()
     printf("Tanggal \033[0;31mtidak valid\033[0m \n");
   }
 
-  switch (isKabisat(D))
+  if (D.Thn >= 1)
   {
-  case true:
-    printf("Tahun kabisat: \033[0;36miya\033[0m\n");
-    break;
-  default:
-    printf("Tahun kabisat: \033[0;31mbukan\033[0m \n");
-  }
+    switch (isKabisat(D))
+    {
+    case true:
+      printf("Tahun kabisat: \033[0;36miya\033[0m\n");
+      break;
+    default:
+      printf("Tahun kabisat: \033[0;31mbukan\033[0m \n");
+    }
 
-  printf("Tanggal akhir: \033[0;34m%d\033[0m \n", TglAkhir(D));
+    if (D.Bln >= 1 && D.Bln <= 12)
+    {
+      printf("Tanggal akhir: \033[0;34m%d\033[0m \n", TglAkhir(D));
+    }
+  }
 
   if (isValid(D))
   {
