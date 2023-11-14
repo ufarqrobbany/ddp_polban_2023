@@ -177,6 +177,7 @@ void rekapBil(int matriks[20][20], int baris, int kolom, Bilangan (*rekapGanjil)
 int main()
 {
   system("cls");
+  printf("\033[0m");
 
   assignMatrix(&matriks, &baris, &kolom);
   printf("\n\033[1;33m============== MATRIKS =============\033[0m \n \n");
