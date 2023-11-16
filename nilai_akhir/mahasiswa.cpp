@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "header.h"
+#include "mahasiswa.h"
 
 void displayDataMhs(Mahasiswa mhs)
 {

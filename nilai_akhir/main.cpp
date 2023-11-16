@@ -24,7 +24,7 @@
 */
 
 #include <stdio.h>
-#include "header.h"
+#include "mahasiswa.h"
 
 int main()
 {
