@@ -1,5 +1,6 @@
 #include "mahasiswa.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,32 +10,54 @@ void addDataMhs(Mahasiswa (*mhs)[100], int *jmlMhs) {
     int tambah, jmlMhsSebelumnya;
     jmlMhsSebelumnya = *jmlMhs;
 
+    FILE *data = fopen("data.txt", "a");
+
+    if (!data) {
+        printf("Gagal membuka file\n");
+        return;
+    }
+
     printf("\nTambah berapa mahasiswa? ");
     scanf("%d", &tambah);
 
     *jmlMhs += tambah;
 
     for (int i = jmlMhsSebelumnya; i < *jmlMhs; i++) {
-        (*mhs)[i].nama = (const char *)malloc(50 * sizeof(char));
-        (*mhs)[i].nim = (const char *)malloc(20 * sizeof(char));
+        (*mhs)[i].nama = (char *)malloc(50 * sizeof(char));
+        (*mhs)[i].nim = (char *)malloc(20 * sizeof(char));
 
         printf("\n");
         printf("Mahasiswa %d \n", (i + 1));
         printf("Nama\t: ");
-        scanf(" %49[^\n]", (char *)(*mhs)[i].nama);
+        scanf(" %[^\n]", (*mhs)[i].nama);
+        // Membersihkan newline character dari buffer
+        while (getchar() != '\n')
+            ;
+
         printf("NIM\t: ");
-        scanf(" %19[^\n]", (char *)(*mhs)[i].nim);
+        scanf(" %[^\n]", (*mhs)[i].nim);
+        // Membersihkan newline character dari buffer
+        while (getchar() != '\n')
+            ;
+
         printf("ETS\t: ");
         scanf("%f", &(*mhs)[i].ets);
+
         printf("EAS\t: ");
         scanf("%f", &(*mhs)[i].eas);
+
         printf("Kuis\t: ");
         scanf("%f", &(*mhs)[i].kuis);
 
         (*mhs)[i].total = get_total((*mhs)[i].ets, (*mhs)[i].eas, (*mhs)[i].kuis);
         (*mhs)[i].predikat = get_predicate((*mhs)[i].total);
+
+        fprintf(data, "%s#%s#%.2f#%.2f#%.2f#%.2f#%s\n", (*mhs)[i].nama, (*mhs)[i].nim, (*mhs)[i].ets, (*mhs)[i].eas, (*mhs)[i].kuis, (*mhs)[i].total, (*mhs)[i].predikat);
     }
 
+    fclose(data);
+
+    readDataMhs(&(*mhs), &(*jmlMhs));
     displayDataMhs(*mhs, *jmlMhs);
 }
 
@@ -96,16 +119,84 @@ void aksiDataMhs(Mahasiswa (*mhs)[100], int *jmlMhs) {
     } while (opsi < 1 || opsi > 2);
 }
 
+// procedure untuk membaca semua data mahasiswa pada file data.txt
+void readDataMhs(Mahasiswa (*mhs)[100], int *jmlMhs) {
+    int i;
+    FILE *data = fopen("data.txt", "r");
+    if (!data) {
+        printf("Tidak ada file\n");
+    } else {
+        i = 0;
+        *jmlMhs = 0;
+
+        while (!feof(data)) {
+            char bufferNama[50];
+            char bufferNIM[20];
+            char bufferPredikat[2];
+
+            if (fscanf(data, "%[^#]#%[^#]#%f#%f#%f#%f#%[^\n]\n", bufferNama, bufferNIM, &(*mhs)[i].ets, &(*mhs)[i].eas, &(*mhs)[i].kuis, &(*mhs)[i].total, bufferPredikat) == 7) {
+                size_t lengthNama = strlen(bufferNama);
+                char *strNama = (char *)malloc(lengthNama + 1);
+                strcpy(strNama, bufferNama);
+                strNama[lengthNama] = '\0';
+                (*mhs)[i].nama = strNama;
+
+                // terkadang NIM tidak terbaca
+                size_t lengthNIM = strlen(bufferNIM);
+                char *strNIM = (char *)malloc(lengthNIM + 1);
+                strcpy(strNIM, bufferNIM);
+                strNIM[lengthNIM] = '\0';
+                (*mhs)[i].nim = strNIM;
+
+                size_t lengthPredikat = strlen(bufferPredikat);
+                char *strPredikat = (char *)malloc(lengthPredikat + 1);
+                strcpy(strPredikat, bufferPredikat);
+                strPredikat[lengthPredikat] = '\0';
+                (*mhs)[i].predikat = strPredikat;
+
+                i++;
+                (*jmlMhs)++;
+            }
+        }
+
+        fclose(data);
+    }
+}
+
+// procedure untuk menyimpan semua data mahasiswa ke file data.text, dipanggil setiap selesai men-sort data mahasiswa
+void writeDataMhs(Mahasiswa mhs[100], int jmlMhs) {
+    FILE *data = fopen("data.txt", "w");
+    for (int i = 0; i < jmlMhs; i++) {
+        fprintf(data, "%s#%s#%.2f#%.2f#%.2f#%.2f#%s\n", mhs[i].nama, mhs[i].nim, mhs[i].ets, mhs[i].eas, mhs[i].kuis, mhs[i].total, mhs[i].predikat);
+    }
+    fclose(data);
+}
+
 // procedure menampilkan semua data mahasiswa dalam bentuk tabel
 void displayDataMhs(Mahasiswa mhs[100], int jmlMhs) {
     printf("\n\nData Mahasiswa\n");
-    printf("+------+--------------------------------+------------+--------+--------+--------+--------+------------+\n");
-    printf("| %-4s | %-30s | %-10s | %-6s | %-6s | %-6s | %-6s | %-10s |\n", "No.", "Nama", "NIM", "ETS", "EAS", "Kuis", "Total", "Predikat");
-    printf("+------+--------------------------------+------------+--------+--------+--------+--------+------------+\n");
-    for (int i = 0; i < jmlMhs; i++) {
-        printf("| %-4d | %-30s | %-10s | %-6.2f | %-6.2f | %-6.2f | %-6.2f | %-10s |\n", i + 1, mhs[i].nama, mhs[i].nim, mhs[i].ets, mhs[i].eas, mhs[i].kuis, mhs[i].total, mhs[i].predikat);
+
+    printf("+------+--------------------------------+----------------+--------+--------+--------+--------+------------+\n");
+    printf("| %-4s | %-30s | %-14s | %-6s | %-6s | %-6s | %-6s | %-10s |\n", "No.", "Nama", "NIM", "ETS", "EAS", "Kuis", "Total", "Predikat");
+    printf("+------+--------------------------------+----------------+--------+--------+--------+--------+------------+\n");
+
+    if (jmlMhs > 0) {
+        for (int i = 0; i < jmlMhs; i++) {
+            printf("| %-4d | %-30s | %-14s | %-6.2f | %-6.2f | %-6.2f | %-6.2f | %-10s |\n",
+                   i + 1,
+                   mhs[i].nama,
+                   mhs[i].nim,
+                   mhs[i].ets,
+                   mhs[i].eas,
+                   mhs[i].kuis,
+                   mhs[i].total,
+                   mhs[i].predikat);
+        }
+    } else {
+        printf("| %-99s |\n", "Tidak ada data");
     }
-    printf("+------+--------------------------------+------------+--------+--------+--------+--------+------------+\n");
+
+    printf("+------+--------------------------------+----------------+--------+--------+--------+--------+------------+\n");
 }
 
 // procedure untuk memilih bagaimana data mahasiswa diurutkan
@@ -135,7 +226,7 @@ void opsiSortingDataMhs(Mahasiswa (*mhs)[100], int jmlMhs) {
         scanf("%d", &order);
         if (order == 1 || order == 2) {
             sortDataMhs(&(*mhs), jmlMhs, sortBy, order);
-            displayDataMhs(*mhs, jmlMhs);
+            displayDataMhs((*mhs), jmlMhs);
         } else {
             printf("Opsi tidak valid\n");
         }
@@ -240,4 +331,6 @@ void sortDataMhs(Mahasiswa (*mhs)[100], int jmlMhs, int sortBy, int order) {
 
         (*mhs)[j + 1] = mhstemp;
     }
+
+    writeDataMhs((*mhs), jmlMhs);
 }

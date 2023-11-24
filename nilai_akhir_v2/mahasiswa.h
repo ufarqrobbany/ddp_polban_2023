@@ -11,6 +11,8 @@ typedef struct
 } Mahasiswa;
 
 // Deklarasi prosedur dan fungsi
+void readDataMhs(Mahasiswa (*mhs)[100], int *jmlMhs);
+void writeDataMhs(Mahasiswa mhs[100], int jmlMhs);
 void addDataMhs(Mahasiswa (*mhs)[100], int *jmlMhs);
 float get_total(float nilaiEts, float nilaiEas, float nilaiKuis);
 const char *get_predicate(float total);

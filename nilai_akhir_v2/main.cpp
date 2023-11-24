@@ -31,44 +31,10 @@
 int main() {
     // deklarasi variabel array mhs bertipe Mahasiswa dan variabel jmlMhs bertipe integer
     Mahasiswa mhs[100];
-    int jmlMhs;
-
-    // file manipulation
-    // FILE *DATA;
-    // char CC;
-
-    // DATA = fopen("data.txt", "r");
-
-    // if(!DATA) {
-    //     printf("Tidak ada file.\n");
-    // } else {
-    //     while(!feof(DATA)) {
-    //         fscanf(DATA, "%[^#]#%d\n")
-    //     }
-    // }
-
-    // tambahkan data mahasiswa
-    jmlMhs = 2;
-
-    mhs[0].nama = "Akhmad";
-    mhs[0].nim = "101010";
-    mhs[0].ets = 80;
-    mhs[0].eas = 90;
-    mhs[0].kuis = 85;
-
-    mhs[1].nama = "Umar Faruq Robbany";
-    mhs[1].nim = "231524028";
-    mhs[1].ets = 87;
-    mhs[1].eas = 90;
-    mhs[1].kuis = 65;
-
-    // panggil fungsi get_total dan get_predicate, kemudian simpan nilai ke data mahasiswa
-    for (int i = 0; i < jmlMhs; i++) {
-        mhs[i].total = get_total(mhs[i].ets, mhs[i].eas, mhs[i].kuis);
-        mhs[i].predikat = get_predicate(mhs[i].total);
-    }
+    int jmlMhs = 0;
 
     // tampilkan data mahasiswa
+    readDataMhs(&mhs, &jmlMhs);
     displayDataMhs(mhs, jmlMhs);
 
     // panggil procedure aksiDataMhs
